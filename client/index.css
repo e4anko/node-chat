@@ -1,0 +1,10 @@
+
+.info dd{
+    font-style: italic;
+    font-weight: normal;
+}
+
+.dl-horizontal dd {
+    white-space: pre-line;
+    word-break: break-all;
+}
