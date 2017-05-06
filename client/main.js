@@ -6,6 +6,8 @@ var app = new Vue({
     user : "",
     isLogged : false,
     isOnline : false,
+	loginText: 'Login',
+	logoutText: 'Logout',
     messages: [],
     message : "",
     socket : null
@@ -23,8 +25,11 @@ var app = new Vue({
         },
         onLogin : function() {
             if (app.socket && app.socket.readyState == 1) {
-                app.socket.close();
-                app.isLogged = false;
+                app.isOnline = false;
+                app.socket.send(JSON.stringify({
+	                type : "logout",
+	                user : app.user
+	            }));
             } else {
                 app.socket = createSocket();
                 app.socket.onopen = function() {
@@ -37,19 +42,24 @@ var app = new Vue({
                 };
                 app.socket.onclose = function(evt) {
                     app.isOnline = false;
-                    if (evt.code == 1006) {
-                        console.log("reconnect");
-                    }
                 };
                 app.socket.onmessage = function(evt) {
                     var data = JSON.parse(evt.data);
                     app.messages.unshift(data);
                 };
             }
+        },
+        onClear : function() {
+        	app.messages = [];
+        	app.socket && app.socket.send(JSON.stringify({
+                type : "clear",
+                user : app.user
+            }));
         }
     }
 });
 
 function createSocket() {
+	console.log("WS ",window.location.hostname);
     return new WebSocket("ws://"+window.location.hostname+":5000");
 }

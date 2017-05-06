@@ -19,7 +19,8 @@
 								<input id="user" autocomplete="off" v-model="user" :disabled="isLogged" placeholder="User name" class=" form-control" />
 							</div>
 							<div class="col-sm-2">
-								<button type="submit" :disabled="isLogged || !user" class="btn btn-default">Login</button>
+								<!--<button type="submit" :disabled="isLogged || !user" class="btn btn-default">Login</button>-->
+								<button type="submit" class="log-button btn btn-default" >{{ isLogged ? logoutText : loginText }}</button>
 							</div>
 						</div>
 					</form>
@@ -42,6 +43,9 @@
 							<label>
 								<input type="checkbox" v-bind:checked="isOnline" disabled="true">Connected
 							</label>
+						</div>
+						<div class="clear-data">
+							<button v-on:click="onClear" v-bind:disabled="!isLogged" class="btn btn-primary">Clear Data</button>
 						</div>
 		 			</div>
 				</div>

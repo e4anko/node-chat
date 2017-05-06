@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "express": "^4.10.2",
-    "nodejs-websocket": "^1.6.0"
+    "nodejs-websocket": "^1.6.0",
+	"pouchdb" : "^6.2.0"
   }
 }
