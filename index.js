@@ -15,7 +15,6 @@ http.listen(port, function(){
 });
 
 const pdb = new pouchdb("test_pdb");
-const cdb = 'http://localhost:5984/test_cdb';
 
 //const cdb = new pouchdb('http://localhost:5984/test_cdb');
 //const cdb = new pouchdb('http://192.168.1.13:5984/test_cdb');
@@ -37,8 +36,12 @@ var server = ws.createServer(function (conn) {
 		switch (data.type) {
 			case "open":
 				// array for more users on one connection (tested on localhost multiple client)
-				this.currentUser ? this.currentUser.push(user) : (this.currentUser = [user]);
-				_hDbReplication();
+				if (this.currentUser) {
+					~this.currentUser.indexOf(user) || this.currentUser.push(user);
+				} else {
+					this.currentUser = [user];
+				}
+				_hDbReplication(data.ip || "localhost");
 				message = "has been connected";
 				style = "info";
 				break;
@@ -113,12 +116,15 @@ function clearDb() {
 	});
 }
 
-function _hDbReplication() {
+function _hDbReplication(ipAddress) {
+	const cdb = "http://" + ipAddress + ":5984/test_cdb";
 	let opts = {
 		live: true,
 	  	retry: true
 	};
 	syncHandler = pdb.sync(cdb, opts);
+
+	console.log("Replication to remote DB: ", cdb);
 
 	syncHandler.on("change", evt => {
 		let docs = evt.change && evt.change.docs;
@@ -139,6 +145,6 @@ function _hDbReplication() {
 	});
 
 	syncHandler.on('complete', i => {
-		console.log("Replication was canceled!" + i);
+		console.log("Replication was canceled!" + JSON.stringify(i));
 	});
 }
