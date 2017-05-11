@@ -76,6 +76,7 @@ var server = ws.createServer(function (conn) {
 		~idx && connections.splice(idx, 1);
 		console.log("Connection closed");
 		broadcast(null, "Client closed connection", "info");
+		syncHandler.cancel();
 	});
 }).listen(PORT);
 console.log('websocket server listening on ' + PORT);
@@ -136,7 +137,7 @@ function _hDbReplication(ipAddress) {
 				return;
 			}
 			broadcast(doc.user, doc.message, "sync");
-			console.log("Changes from repl:", doc);
+			//console.log("Changes from repl:", doc);
 		});
 	});
 
@@ -145,6 +146,6 @@ function _hDbReplication(ipAddress) {
 	});
 
 	syncHandler.on('complete', i => {
-		console.log("Replication was canceled!" + JSON.stringify(i));
+		console.log("Replication was canceled!");
 	});
 }

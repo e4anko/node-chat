@@ -66,6 +66,5 @@ var app = new Vue({
 });
 
 function createSocket() {
-	console.log("WS: ", window.location.hostname);
     return new WebSocket("ws://"+window.location.hostname+":5000");
 }
